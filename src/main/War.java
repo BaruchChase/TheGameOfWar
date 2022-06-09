@@ -19,7 +19,9 @@ public class War {
 	Deck gameDeck;
 	Queue<Card> player1Hand, player2Hand;
 //	these Arraylists will be used to store list of cards if a "War" is triggered
-	ArrayList<Card> tempP1Stack, tempP2Stack;
+	ArrayList<Card> tempP1Stack = new ArrayList<>(), tempP2Stack = new ArrayList<>();
+	boolean rigged;
+	private Players riggedPlayer;
 
 	public enum Players {PLAYER1, PLAYER2}
 
@@ -29,7 +31,8 @@ public class War {
 		gameDeck = new Deck();
 		player1Hand = new LinkedList<>();
 		player2Hand = new LinkedList<>();
-		startNewGame(gameDeck);
+		rigged = false;
+
 	}
 
 	// this constructor is for testing such that a designated winner can be chosen
@@ -37,9 +40,19 @@ public class War {
 		gameDeck = new Deck();
 		this.player1Hand = new LinkedList<>();
 		this.player2Hand = new LinkedList<>();
-		startNewRiggedGame(player, gameDeck);
+		rigged = true;
+		riggedPlayer = player;
+
 	}
 
+	public void start() {
+		if (rigged) {
+			startNewRiggedGame(riggedPlayer, gameDeck);
+		}
+		else {
+			startNewGame(gameDeck);
+		}
+	}
 
 	//	methods
 	private void startNewGame(Deck curDeck) {
@@ -84,28 +97,30 @@ public class War {
 			if (player1Hand.size() > 1 && player2Hand.size() > 1){
 				startWarCondition();
 			}
-			else if (player1Hand.size() == 1) {
-				tempP1Stack.add(player1Hand.remove());
-				startWarCondition();
-			}
 			else {
-				tempP2Stack.add(player2Hand.remove());
+				if (player1Hand.size() == 1) {
+					tempP1Stack.add(player1Hand.remove());
+				}
+				if (player2Hand.size() == 1){
+					tempP2Stack.add(player2Hand.remove());
+				}
 				startWarCondition();
 			}
 		}
 	}
 
-	public void printTurn(String war) {
+	public void printTurn(String turn) {
+		System.out.println(turn);
 	}
 
 	public String formatTurn(String player1CurCard, String player2CurCard, String str) {
-		String format = "|%1$-30s|%2$-30s|%3$-15|\n";
+		String format = "|%1$-25s|%2$-25s|%3$-15s|\n";
 		return String.format(format, player1CurCard, player2CurCard, str);
 	}
 
 	private void startWarCondition() {
 		ArrayList<Card> player1Stack, player2Stack;
-		if (tempP1Stack.isEmpty() && tempP2Stack.isEmpty()) {
+		if (tempP1Stack.size() == 0 && tempP2Stack.size() == 0) {
 			player1Stack = new ArrayList<>();
 			player2Stack = new ArrayList<>();
 		}
@@ -124,7 +139,7 @@ public class War {
 			}
 		}
 		else {
-			for (int i = 0; i <= player1Hand.size(); i++) {
+			for (int i = 0; i < player1Hand.size(); i++) {
 				player1Stack.add(player1Hand.remove());
 			}
 		}
@@ -135,10 +150,11 @@ public class War {
 			}
 		}
 		else {
-			for (int i = 0; i <= player2Hand.size(); i++) {
+			for (int i = 0; i < player2Hand.size(); i++) {
 				player2Stack.add(player2Hand.remove());
 			}
 		}
+
 
 		player1CurCard = player1Stack.get(player1Stack.size() - 1);
 		player2CurCard = player2Stack.get(player2Stack.size() - 1);
@@ -147,6 +163,7 @@ public class War {
 		printTurn("Two");
 		printTurn("Three");
 		printTurn("War!");
+		printTurn("");
 
 		if (player1CurCard.cardNum > player2CurCard.cardNum) {
 			player1Hand.addAll(player1Stack);

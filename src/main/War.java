@@ -1,6 +1,5 @@
 package main;
 
-import java.awt.*;
 import java.util.*;
 
 public class War {
@@ -62,15 +61,26 @@ public class War {
 		Card player1CurCard, player2CurCard;
 		player1CurCard = player1Hand.remove();
 		player2CurCard = player2Hand.remove();
+
 		if (player1CurCard.cardNum > player2CurCard.cardNum) {
 			player1Hand.add(player1CurCard);
 			player1Hand.add(player2CurCard);
+			String formattedTurn = formatTurn(player1CurCard.formattedCardName, player2CurCard.formattedCardName,
+					"Player One Wins this round");
+			printTurn(formattedTurn);
 		}
 		else if (player2CurCard.cardNum > player1CurCard.cardNum) {
 			player2Hand.add(player2CurCard);
 			player2Hand.add(player1CurCard);
+			String formattedTurn = formatTurn(player1CurCard.formattedCardName, player2CurCard.formattedCardName,
+					"Player Two Wins this round");
+			printTurn(formattedTurn);
 		}
 		else {
+			String formattedTurn = formatTurn(player1CurCard.formattedCardName ,player2CurCard.formattedCardName,
+					"It's a tie! War!");
+			printTurn(formattedTurn);
+
 			if (player1Hand.size() > 1 && player2Hand.size() > 1){
 				startWarCondition();
 			}
@@ -83,6 +93,14 @@ public class War {
 				startWarCondition();
 			}
 		}
+	}
+
+	public void printTurn(String war) {
+	}
+
+	public String formatTurn(String player1CurCard, String player2CurCard, String str) {
+		String format = "|%1$-30s|%2$-30s|%3$-15|\n";
+		return String.format(format, player1CurCard, player2CurCard, str);
 	}
 
 	private void startWarCondition() {
@@ -125,17 +143,34 @@ public class War {
 		player1CurCard = player1Stack.get(player1Stack.size() - 1);
 		player2CurCard = player2Stack.get(player2Stack.size() - 1);
 
+		printTurn("One");
+		printTurn("Two");
+		printTurn("Three");
+		printTurn("War!");
+
 		if (player1CurCard.cardNum > player2CurCard.cardNum) {
 			player1Hand.addAll(player1Stack);
 			player1Hand.addAll(player2Stack);
+
+			String formattedTurn = formatTurn(player1CurCard.formattedCardName, player2CurCard.formattedCardName,
+					"Player One Wins this round");
+			printTurn(formattedTurn);
 		}
 		else if (player2CurCard.cardNum > player1CurCard.cardNum) {
 			player2Hand.addAll(player2Stack);
 			player2Hand.addAll(player1Stack);
+
+			String formattedTurn = formatTurn(player1CurCard.formattedCardName, player2CurCard.formattedCardName,
+					"Player Two Wins this round");
+			printTurn(formattedTurn);
 		}
 		else {
 			tempP1Stack = player1Stack;
 			tempP2Stack = player2Stack;
+
+			String formattedTurn = formatTurn(player1CurCard.formattedCardName, player2CurCard.formattedCardName,
+					"It's a tie! War!");
+			printTurn(formattedTurn);
 			startWarCondition();
 		}
 	}
@@ -143,6 +178,7 @@ public class War {
 	private void printWinner(Players winner) {
 		String formattedWinner = (winner == Players.PLAYER1) ? "Player 1" : "Player 2";
 		System.out.println("Player " + formattedWinner + " wins!");
+
 	}
 
 
